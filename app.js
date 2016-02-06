@@ -33,9 +33,9 @@ if (env === 'development') {
 
 app.use(passport.initialize());
 app.use(passport.session());
+require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
 require('./routes/routes.js')(express, app, passport);
-require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
 app.set('port', process.env.PORT || 3000);
 var server = require('http').createServer(app);
