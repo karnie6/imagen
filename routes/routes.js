@@ -14,6 +14,12 @@ module.exports = function(express, app, passport){
 		}
 	};
 
+	router.get('/auth/facebook', passport.authenticate('facebook'));
+	router.get('/auth/facebook/callback', passport.authenticate('facebook', {
+		sucessRedirect:'/',
+		failureRedirect:'/'
+	}));
+
 
 	app.use('/', router);
 }

@@ -1,0 +1,10 @@
+{
+	"dbURL": "mongodb://imagen:imagen@ds039175.mongolab.com:39175/karthik",
+	"sessionSecret":"JKDFJLSDFJOVJCSDOI",
+	"fb": {
+		"appID": "1677016632588048",
+		"appSecret": "74a9bacc4a29a0a4fc4e283a2275057f",
+		"callbackURL": "http://imagen-karthik.herokuapp.com/auth/facebook/callback"
+	},
+	"host":"imagen-karthik.herokuapp.com"
+}
