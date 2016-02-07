@@ -19,7 +19,7 @@ var User = React.createClass({
   },
   render: function() {
     return (
-      <li><img src={this.state.userPic}/>{this.state.userName}</li>
+      <div className="user"><img src={this.state.userPic}/><span className="userName">{this.state.userName}</span></div>
     );
   }
 });

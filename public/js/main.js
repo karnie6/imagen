@@ -29345,6 +29345,9 @@ var React = require('react');
 var NavBar = require('./nav/NavBar.jsx');
 
 var navLinks = [{
+  "title": "Images",
+  "href": "/images"
+}, {
   "title": "Upload New Image",
   "href": "/upload"
 }];
@@ -29389,16 +29392,22 @@ var Image = React.createClass({
             var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
             return React.createElement(
                   'div',
-                  { key: this.props.id },
+                  { className: 'image', key: this.props.id },
                   React.createElement(
                         'a',
                         { href: hrefString },
-                        React.createElement('img', { width: '150', height: '150', src: imageLocationHref })
+                        React.createElement('img', { maxWidth: '200', height: '200', src: imageLocationHref })
                   ),
                   React.createElement(
-                        'span',
-                        null,
+                        'div',
+                        { className: 'imageUploader' },
+                        'Uploaded by ',
                         this.props.userName
+                  ),
+                  React.createElement(
+                        'a',
+                        { href: hrefString, className: 'btn btn-primary btn-large' },
+                        'Annotate'
                   )
             );
       }
@@ -29458,23 +29467,31 @@ var ImageUploadComponent = React.createClass({
     return React.createElement(
       'div',
       null,
-      React.createElement(DropzoneComponent, { config: componentConfig, action: '/api/ping/upload',
-        eventHandlers: eventHandlers,
-        djsConfig: djsConfig }),
-      this.state.uploadButtonActive ? React.createElement(
-        'button',
-        { onClick: this.onUpload, className: 'btn btn-success btn-large' },
-        'Upload'
-      ) : React.createElement(
-        'button',
-        { onClick: this.onUpload, className: 'btn btn-success btn-large', disabled: 'disabled' },
-        'Upload'
+      React.createElement(
+        'div',
+        { className: 'filepicker' },
+        React.createElement(DropzoneComponent, { config: componentConfig, action: '/api/ping/upload',
+          eventHandlers: eventHandlers,
+          djsConfig: djsConfig }),
+        this.state.uploadButtonActive ? React.createElement(
+          'button',
+          { onClick: this.onUpload, className: 'uploadButton btn btn-success btn-large' },
+          'Upload'
+        ) : React.createElement(
+          'button',
+          { onClick: this.onUpload, className: 'uploadButton btn btn-success btn-large', disabled: 'disabled' },
+          'Upload'
+        )
       ),
-      this.state.justUploaded ? React.createElement(
-        'span',
-        { className: '' },
-        'Successfully Uploaded Image!'
-      ) : null
+      React.createElement(
+        'div',
+        null,
+        this.state.justUploaded ? React.createElement(
+          'span',
+          { className: 'success-msg' },
+          'Successfully Uploaded Image!'
+        ) : null
+      )
     );
   }
 });
@@ -29509,7 +29526,12 @@ var ImagesPage = React.createClass({
     return React.createElement(
       'div',
       null,
-      this.state.images.map(renderImage, this)
+      this.state.images.map(renderImage, this),
+      React.createElement(
+        'a',
+        { href: '/upload', className: 'btn btn-success btn-large' },
+        'Upload New Image'
+      )
     );
   }
 });
@@ -29547,11 +29569,6 @@ var NavBar = React.createClass({
             React.createElement('span', { className: 'icon-bar' }),
             React.createElement('span', { className: 'icon-bar' }),
             React.createElement('span', { className: 'icon-bar' })
-          ),
-          React.createElement(
-            Link,
-            { className: 'navbar-brand', to: '/images' },
-            'Images'
           )
         ),
         React.createElement(
@@ -29560,9 +29577,9 @@ var NavBar = React.createClass({
           React.createElement(
             'ul',
             { className: 'nav navbar-nav' },
-            this.props.navData.map(addNavItem),
-            React.createElement(User, null)
-          )
+            this.props.navData.map(addNavItem)
+          ),
+          React.createElement(User, null)
         )
       )
     );
@@ -29627,10 +29644,14 @@ var User = React.createClass({
   },
   render: function () {
     return React.createElement(
-      'li',
-      null,
+      'div',
+      { className: 'user' },
       React.createElement('img', { src: this.state.userPic }),
-      this.state.userName
+      React.createElement(
+        'span',
+        { className: 'userName' },
+        this.state.userName
+      )
     );
   }
 });

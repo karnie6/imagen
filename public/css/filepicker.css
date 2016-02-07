@@ -3,6 +3,10 @@
     font-family: sans-serif;
 }
 
+.uploadButton {
+  margin-top: 10px;
+}
+
 div.filepicker {
     text-align: center;
     padding: 5px;
@@ -78,4 +82,31 @@ div.filepicker {
 
 .filepicker.dropzone .dz-preview.dz-image-preview .dz-image {
     border-radius: 5px;
+}
+
+/* User CSS */
+.user {
+  float: right;
+}
+
+.userName {
+  padding-left: 5px;
+}
+
+.image {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.imageUploader {
+  margin-left: 50px;
+  font-weight: italic;
+}
+
+.success-msg {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px 3px 3px 3px;
+  color: #270;
+  background-color: #DFF2BF;
 }

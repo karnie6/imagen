@@ -17,6 +17,11 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		});
 	});
 
+	router.get('/upload', securePages, function(req, res, next){
+		res.render('index', {
+		});
+	});
+
   //if trying to access a page that needs login and not authenticated, redirect to login page.
 	function securePages(req, res, next) {
 		if(req.isAuthenticated()) {

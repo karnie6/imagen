@@ -3,6 +3,10 @@ var NavBar = require('./nav/NavBar.jsx');
 
 var navLinks = [
   {
+    "title": "Images",
+    "href": "/images"
+  },
+  {
     "title": "Upload New Image",
     "href": "/upload"
   }

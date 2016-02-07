@@ -20,7 +20,7 @@ var ImagesPage = React.createClass({
     var renderImage = function(image) {
       return (<Image key={image._id} id={image._id} fileName={image.fileName} userName={image.userName}/>);
     }
-    return (<div>{this.state.images.map(renderImage, this)}</div>);
+    return (<div>{this.state.images.map(renderImage, this)}<a href="/upload" className="btn btn-success btn-large">Upload New Image</a></div>);
   }
 });
 

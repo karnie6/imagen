@@ -47,16 +47,18 @@ var ImageUploadComponent = React.createClass({
 
     return (
       <div>
+      <div className="filepicker">
       <DropzoneComponent config={componentConfig} action="/api/ping/upload"
                              eventHandlers={eventHandlers}
                              djsConfig={djsConfig} />
 
       {this.state.uploadButtonActive ?
-      <button onClick={this.onUpload} className="btn btn-success btn-large">Upload</button>
-      : <button onClick={this.onUpload} className="btn btn-success btn-large" disabled="disabled">Upload</button>
+      <button onClick={this.onUpload} className="uploadButton btn btn-success btn-large">Upload</button>
+      : <button onClick={this.onUpload} className="uploadButton btn btn-success btn-large" disabled="disabled">Upload</button>
       }
+      </div>
 
-      {this.state.justUploaded ? <span className="">Successfully Uploaded Image!</span> : null}
+      <div>{this.state.justUploaded ? <span className="success-msg">Successfully Uploaded Image!</span> : null}</div>
       </div>);
   }
 });
