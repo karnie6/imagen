@@ -29394,16 +29394,18 @@ var ImageUploadComponent = React.createClass({
 
   mixins: [Reflux.listenTo(ImageStore, 'onChange')],
   getInitialState: function () {
-    return { files: "", uploadButtonActive: "disabled" };
+    return { files: "", uploadButtonActive: false, justUploaded: false };
   },
   onDrop: function (files) {
-    console.log(files);
-    this.setState({ files: files, uploadButtonActive: "" });
+    this.setState({ files: files, uploadButtonActive: true, justUploaded: false });
   },
   onUpload: function (e) {
     e.preventDefault();
-
     Actions.uploadImage(this.state.files);
+    this.setState({ justUploaded: true });
+  },
+  onChange: function () {
+    console.log('here');
   },
   render: function () {
     var multipleValue = false;
@@ -29468,41 +29470,78 @@ var ImageUploadComponent = React.createClass({
       React.createElement(DropzoneComponent, { config: componentConfig, action: '/api/ping/upload',
         eventHandlers: eventHandlers,
         djsConfig: djsConfig }),
-      React.createElement(
+      this.state.uploadButtonActive ? React.createElement(
         'button',
         { onClick: this.onUpload, className: 'btn btn-success btn-large' },
         'Upload'
-      )
+      ) : React.createElement(
+        'button',
+        { onClick: this.onUpload, className: 'btn btn-success btn-large', disabled: 'disabled' },
+        'Upload'
+      ),
+      this.state.justUploaded ? React.createElement(
+        'span',
+        { className: '' },
+        'Successfully Uploaded Image!'
+      ) : null
     );
   }
 });
 
 module.exports = ImageUploadComponent;
 
-},{"./reflux/action.jsx":253,"./reflux/image-store.jsx":254,"./services/httpservice.jsx":255,"react":222,"react-dropzone":29,"react-dropzone-component":27,"react-router":58,"reflux":239,"superagent":242}],249:[function(require,module,exports){
+},{"./reflux/action.jsx":253,"./reflux/image-store.jsx":254,"./services/httpservice.jsx":256,"react":222,"react-dropzone":29,"react-dropzone-component":27,"react-router":58,"reflux":239,"superagent":242}],249:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var Reflux = require('reflux');
+var Actions = require('./reflux/action.jsx');
+var ImageStore = require('./reflux/image-store.jsx');
 
 var ImagesPage = React.createClass({
   displayName: 'ImagesPage',
 
+  mixins: [Reflux.listenTo(ImageStore, 'onChange')],
+  getInitialState: function () {
+    return { images: [] };
+  },
+  componentWillMount: function () {
+    Actions.getImages();
+  },
+  onChange: function (event, data) {
+    this.setState({ images: data });
+  },
   render: function () {
+    var listItems = this.state.images.map(function (image) {
+      var hrefString = "/image/" + image._id;
+      var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + image.fileName;
+      return React.createElement(
+        'div',
+        { key: image._id },
+        React.createElement(
+          'a',
+          { href: hrefString },
+          React.createElement('img', { width: '150', height: '150', src: imageLocationHref })
+        ),
+        React.createElement(
+          'span',
+          null,
+          image.userName
+        )
+      );
+    });
+
     return React.createElement(
       'div',
       null,
-      React.createElement(
-        'h1',
-        null,
-        'HOME PAGE'
-      )
+      listItems
     );
   }
 });
 
 module.exports = ImagesPage;
 
-},{"react":222,"react-router":58}],250:[function(require,module,exports){
+},{"./reflux/action.jsx":253,"./reflux/image-store.jsx":254,"react":222,"react-router":58,"reflux":239}],250:[function(require,module,exports){
 var React = require('react');
 var NavItem = require('./NavItem.jsx');
 var ReactRouter = require('react-router');
@@ -29596,19 +29635,22 @@ var Link = ReactRouter.Link;
 var HTTP = require('../services/httpservice.jsx');
 var Reflux = require('reflux');
 var Actions = require('../reflux/action.jsx');
-var ImageStore = require('../reflux/image-store.jsx');
+var UserStore = require('../reflux/user-store.jsx');
 
 var User = React.createClass({
   displayName: 'User',
 
-  mixins: [Reflux.listenTo(ImageStore, 'onChange')],
+  mixins: [Reflux.listenTo(UserStore, 'onUserAction')],
   getInitialState: function () {
     return { userName: "", userPic: "" };
   },
   componentWillMount: function () {
+    console.log('here1');
     Actions.getUser();
   },
-  onChange: function (event, data) {
+  onUserAction: function (event, data) {
+    console.log('here2');
+
     this.setState({ userName: data.fullname, userPic: data.profilePic });
   },
   render: function () {
@@ -29623,7 +29665,7 @@ var User = React.createClass({
 
 module.exports = User;
 
-},{"../reflux/action.jsx":253,"../reflux/image-store.jsx":254,"../services/httpservice.jsx":255,"react":222,"react-router":58,"reflux":239}],253:[function(require,module,exports){
+},{"../reflux/action.jsx":253,"../reflux/user-store.jsx":255,"../services/httpservice.jsx":256,"react":222,"react-router":58,"reflux":239}],253:[function(require,module,exports){
 var React = require('react');
 var Reflux = require('reflux');
 
@@ -29642,14 +29684,10 @@ var ImageStore = Reflux.createStore({
   getImages: function () {
 
     this.images = [];
-
-    HTTP.get('/api/getImages').then(function (data) {
-      var pokemonData = data.pokemon.map(function (pokemon) {
-        HTTP.get(pokemon.resource_uri).then(function (data) {
-          var pokemonEntry = { "id": data.pkdx_id, "name": data.name };
-          this.pokemons.push(pokemonEntry);
-          this.fireUpdate();
-        }.bind(this));
+    HTTP.get('/api/images').then(function (data) {
+      var imageData = data.map(function (image) {
+        this.images.push(image);
+        this.fireImageUpdate();
       }.bind(this));
     }.bind(this));
   },
@@ -29663,22 +29701,50 @@ var ImageStore = Reflux.createStore({
     console.log("uploading..", fileData.name);
     var req = request.post('/api/image/upload');
     req.attach('upload', fileData).set('Accept', 'application/json').end(function (err, res) {
-      console.log(res);
-      //todo: trigger an update
-    });
+      if (!err && res.statusCode == 200) {
+        //it was successful, push an image on to images & fire an update
+        //    var newImage = res.text;
+        //  this.images.push(newImage);
+        this.fireImageUpdate();
+      }
+    }.bind(this));
   },
   //refresh function
-  fireUpdate: function () {
-    this.trigger('change', this.pokemons);
-  },
   fireUserUpdate: function () {
-    this.trigger('change', this.user);
+    this.trigger('userAction', this.user);
+  },
+  fireImageUpdate: function () {
+    this.trigger('change', this.images);
   }
 });
 
 module.exports = ImageStore;
 
-},{"../services/httpservice.jsx":255,"./action.jsx":253,"reflux":239,"superagent":242}],255:[function(require,module,exports){
+},{"../services/httpservice.jsx":256,"./action.jsx":253,"reflux":239,"superagent":242}],255:[function(require,module,exports){
+var HTTP = require('../services/httpservice.jsx');
+var Reflux = require('reflux');
+var Actions = require('./action.jsx');
+var request = require('superagent');
+
+var UserStore = Reflux.createStore({
+  listenables: [Actions],
+
+  getUser: function () {
+    HTTP.get('/user').then(function (data) {
+      this.user = data;
+      this.fireUserUpdate();
+    }.bind(this));
+  },
+
+  //refresh function
+  fireUserUpdate: function () {
+    this.trigger('userAction', this.user);
+  }
+});
+
+module.exports = UserStore;
+
+},{"../services/httpservice.jsx":256,"./action.jsx":253,"reflux":239,"superagent":242}],256:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = 'http://localhost:3000';
 
@@ -29704,14 +29770,14 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":246}],256:[function(require,module,exports){
+},{"whatwg-fetch":246}],257:[function(require,module,exports){
 var React = require('react');
 var ReactDom = require('react-dom');
 var routes = require('./routes.jsx');
 
 ReactDom.render(routes, document.getElementById('main'));
 
-},{"./routes.jsx":257,"react":222,"react-dom":24}],257:[function(require,module,exports){
+},{"./routes.jsx":258,"react":222,"react-dom":24}],258:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 
@@ -29746,4 +29812,4 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":248,"./components/ImagesPage.jsx":249,"history/lib/createHashHistory":9,"react":222,"react-router":58}]},{},[256]);
+},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":248,"./components/ImagesPage.jsx":249,"history/lib/createHashHistory":9,"react":222,"react-router":58}]},{},[257]);

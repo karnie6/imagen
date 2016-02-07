@@ -26,6 +26,13 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		}
 	};
 
+	router.get('/api/images', function(req, res, next) {
+		imagenImageModel.find({}, function(error, result) {
+			res.send(JSON.stringify(result));
+		});
+	});
+
+	//dummy post api to  place nicely with file uploader
 	router.post('/api/ping/upload', function(req, res, next) {
 		res.send({});
 	});
@@ -53,6 +60,8 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		tmpFile = files.upload.path;
 		fname = generateFilename(files.upload.name);
 		nfile = os.tmpDir() + '/' + fname;
+		res.send({fileName: fname, userName: userName});
+		res.end();
 	});
 
 	newForm.on('end', function() {
@@ -86,8 +95,8 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		});
 	});
 
-	res.writeHead(200, {'Content-type':'text/plain'});
-	res.end();
+//	res.writeHead(200, {'Content-type':'text/plain'});
+
 	});
 
 	router.get('/auth/facebook', passport.authenticate('facebook'));

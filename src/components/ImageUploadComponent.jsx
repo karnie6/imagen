@@ -12,17 +12,18 @@ var request = require('superagent');
 var ImageUploadComponent = React.createClass({
   mixins:[Reflux.listenTo(ImageStore, 'onChange')],
   getInitialState: function() {
-    return {files: "", uploadButtonActive: "disabled"};
+    return {files: "", uploadButtonActive: false, justUploaded: false};
   },
   onDrop: function(files) {
-    console.log(files);
-    this.setState({files: files, uploadButtonActive: ""});
+    this.setState({files: files, uploadButtonActive: true, justUploaded: false});
   },
   onUpload: function(e) {
     e.preventDefault();
-
     Actions.uploadImage(this.state.files);
-
+    this.setState({justUploaded: true});
+  },
+  onChange: function() {
+    console.log('here');
   },
   render: function() {
     var multipleValue = false;
@@ -86,8 +87,16 @@ var ImageUploadComponent = React.createClass({
       <DropzoneComponent config={componentConfig} action="/api/ping/upload"
                              eventHandlers={eventHandlers}
                              djsConfig={djsConfig} />
-      <button onClick={this.onUpload} className="btn btn-success btn-large">Upload</button>
 
+      {this.state.uploadButtonActive ?
+      <button onClick={this.onUpload} className="btn btn-success btn-large">Upload</button>
+      : <button onClick={this.onUpload} className="btn btn-success btn-large" disabled="disabled">Upload</button>
+      }
+
+      {this.state.justUploaded ?
+      <span className="">Successfully Uploaded Image!</span>
+      : null
+      }
 
       </div>);
   }

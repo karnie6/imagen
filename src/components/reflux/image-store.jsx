@@ -8,18 +8,13 @@ var ImageStore = Reflux.createStore({
   getImages: function() {
 
     this.images = [];
-
-    HTTP.get('/api/getImages')
+    HTTP.get('/api/images')
     .then(function(data) {
-      var pokemonData = data.pokemon.map(function(pokemon) {
-          HTTP.get(pokemon.resource_uri)
-          .then(function(data) {
-              var pokemonEntry = {"id": data.pkdx_id, "name": data.name};
-              this.pokemons.push(pokemonEntry);
-              this.fireUpdate();
-          }.bind(this));
-      }.bind(this));
+      var imageData = data.map(function(image) {
+              this.images.push(image);
+              this.fireImageUpdate();
 
+      }.bind(this));
     }.bind(this));
   },
   getUser: function() {
@@ -35,17 +30,22 @@ var ImageStore = Reflux.createStore({
     req.attach('upload', fileData)
     .set('Accept', 'application/json')
   .end(function(err, res){
-    console.log(res);
-    //todo: trigger an update
-  });
+    if (!err && res.statusCode == 200) {
+      //it was successful, push an image on to images & fire an update
+  //    var newImage = res.text;
+    //  this.images.push(newImage);
+      this.fireImageUpdate();
+    }
+
+  }.bind(this));
 
   },
   //refresh function
-  fireUpdate: function() {
-    this.trigger('change', this.pokemons);
-  },
   fireUserUpdate: function() {
-    this.trigger('change', this.user);
+    this.trigger('userAction', this.user);
+  },
+  fireImageUpdate: function() {
+    this.trigger('change', this.images);
   }
 });
 

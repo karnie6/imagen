@@ -4,17 +4,20 @@ var Link = ReactRouter.Link;
 var HTTP = require('../services/httpservice.jsx');
 var Reflux = require('reflux');
 var Actions = require('../reflux/action.jsx');
-var ImageStore = require('../reflux/image-store.jsx');
+var UserStore = require('../reflux/user-store.jsx');
 
 var User = React.createClass({
-  mixins:[Reflux.listenTo(ImageStore, 'onChange')],
+  mixins:[Reflux.listenTo(UserStore, 'onUserAction')],
   getInitialState: function() {
     return {userName: "", userPic: ""};
   },
   componentWillMount: function() {
+    console.log('here1');
     Actions.getUser();
   },
-  onChange: function(event, data) {
+  onUserAction: function(event, data) {
+    console.log('here2');
+
     this.setState({userName: data.fullname, userPic: data.profilePic});
   },
   render: function() {
