@@ -1,6 +1,7 @@
 var HTTP = require('../services/httpservice.jsx');
 var Reflux = require('reflux');
 var Actions = require('./action.jsx');
+var request = require('superagent');
 
 var ImageStore = Reflux.createStore({
   listenables: [Actions],
@@ -25,13 +26,28 @@ var ImageStore = Reflux.createStore({
     HTTP.get('/user')
     .then(function(data) {
       this.user = data;
-      this.trigger('change', this.user);
+      this.fireUserUpdate();
     }.bind(this));
+  },
+  uploadImage: function(fileData) {
+    console.log("uploading..", fileData.name);
+    var req = request.post('/api/image/upload');
+    req.attach('upload', fileData)
+    .set('Accept', 'application/json')
+    .set('credentials', 'same-origin')
+  .end(function(err, res){
+    console.log('uploaded..' + res);
+    //todo: trigger an update
+  });
+
   },
   //refresh function
   fireUpdate: function() {
     this.trigger('change', this.pokemons);
   },
+  fireUserUpdate: function() {
+    this.trigger('change', this.user);
+  }
 });
 
 module.exports = ImageStore;

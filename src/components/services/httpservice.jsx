@@ -15,7 +15,7 @@ var service = {
           'Content-Type': 'application/json'
         },
         method: 'post',
-        body: JSON.stringify(data)
+        body: data
       }).then(function(response) {
         return response;
       });

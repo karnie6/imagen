@@ -15,6 +15,7 @@ var History = new CreateHistory({
 
 var BasePage = require('./components/BasePage.jsx');
 var ImagesPage = require('./components/ImagesPage.jsx');
+var ImageUploadComponent = require('./components/ImageUploadComponent.jsx');
 //var ImagePage = require('./components/ImagePage.jsx');
 //<Route path="/image/:imageId" component={ImagePage} />
 
@@ -22,22 +23,10 @@ var Routes = (
   <Router history={History}>
     <Route path="/" component={BasePage} >
      <IndexRoute component={ImagesPage} />
+     <Route path="/upload" component={ImageUploadComponent} />
     </Route>
   </Router>
 
 );
-
-
-//var Routes = (
-//<Router>
-//</Router>
-
-//  <Router history={browserHistory}>
-//  <Route path="/" component={Base}></R
-
-//  </Route>
-//  </Router>
-//);
-
 
 module.exports = Routes;

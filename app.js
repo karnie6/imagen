@@ -5,6 +5,10 @@ var express = require('express');
 	session = require('express-session'),
   cookieParser = require('cookie-parser'),
   passport = require('passport'),
+	knox = require('knox'),
+	fs = require('fs'),
+	os = require('os'),
+	formidable = require('formidable'),
 	mongoose = require('mongoose').connect(config.dbURL),
   FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -33,9 +37,23 @@ if (env === 'development') {
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+var knoxClient = knox.createClient({
+	key: "AKIAJIYZPWJHHHF5PWVQ",
+	secret: "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",
+	bucket: "photogrid-ks"
+});
+
+var imagenImage = new mongoose.Schema({
+	fileName:String,
+	userName: String
+});
+
+var imagenImageModel = mongoose.model('imagenImage', imagenImage);
+
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
-require('./routes/routes.js')(express, app, passport);
+require('./routes/routes.js')(express, app, passport, knox, fs, os, formidable, imagenImageModel);
 
 app.set('port', process.env.PORT || 3000);
 var server = require('http').createServer(app);
