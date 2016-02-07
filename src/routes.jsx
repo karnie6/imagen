@@ -7,13 +7,6 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var browserHistory = ReactRouter.browserHistory;
 
-
-var CreateHistory = require('history/lib/createHashHistory');
-
-var History = new CreateHistory({
-  queryKey: false
-});
-
 var BasePage = require('./components/BasePage.jsx');
 var ImagesPage = require('./components/ImagesPage.jsx');
 var ImageUploadComponent = require('./components/ImageUploadComponent.jsx');

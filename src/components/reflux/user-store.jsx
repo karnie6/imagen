@@ -7,7 +7,7 @@ var UserStore = Reflux.createStore({
   listenables: [Actions],
 
   getUser: function() {
-    HTTP.get('/user')
+    HTTP.get('/api/user')
     .then(function(data) {
       this.user = data;
       this.fireUserUpdate();

@@ -29698,7 +29698,7 @@ var UserStore = Reflux.createStore({
   listenables: [Actions],
 
   getUser: function () {
-    HTTP.get('/user').then(function (data) {
+    HTTP.get('/api/user').then(function (data) {
       this.user = data;
       this.fireUserUpdate();
     }.bind(this));
@@ -29755,12 +29755,6 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var browserHistory = ReactRouter.browserHistory;
 
-var CreateHistory = require('history/lib/createHashHistory');
-
-var History = new CreateHistory({
-  queryKey: false
-});
-
 var BasePage = require('./components/BasePage.jsx');
 var ImagesPage = require('./components/ImagesPage.jsx');
 var ImageUploadComponent = require('./components/ImageUploadComponent.jsx');
@@ -29780,4 +29774,4 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":249,"./components/ImagesPage.jsx":250,"history/lib/createHashHistory":9,"react":222,"react-router":58}]},{},[258]);
+},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":249,"./components/ImagesPage.jsx":250,"react":222,"react-router":58}]},{},[258]);
