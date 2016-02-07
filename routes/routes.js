@@ -26,6 +26,10 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		}
 	};
 
+	router.post('/api/ping/upload', function(req, res, next) {
+		res.send({});
+	});
+
 	//route to handle image upload
 	router.post('/api/image/upload', function(req, res, next) {
 
