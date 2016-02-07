@@ -42,6 +42,7 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		}
 
 	var tmpFile, nfile, fname;
+	var userName = req.user.fullname;
 	var newForm = new formidable.IncomingForm();
 	newForm.keepExtensions = true;
 	newForm.parse(req, function(err, fields, files) {
@@ -61,10 +62,11 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 
 				//if successfully saved on S3, let's save it in the DB
 				req.on('response', function(res) {
+					console.log(fname);
 					if (res.statusCode == 200) {
 						var newImage = new imagenImageModel({
 							fileName: fname,
-							userName: 'Karthik'
+							userName: userName
 						}).save();
 
 					fs.unlink(nfile, function() {
@@ -80,8 +82,8 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		});
 	});
 
-		res.writeHead(200, {'Content-type':'text/plain'});
-		res.end();
+	res.writeHead(200, {'Content-type':'text/plain'});
+	res.end();
 	});
 
 	router.get('/auth/facebook', passport.authenticate('facebook'));

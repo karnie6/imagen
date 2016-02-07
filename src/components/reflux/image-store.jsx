@@ -34,7 +34,6 @@ var ImageStore = Reflux.createStore({
     var req = request.post('/api/image/upload');
     req.attach('upload', fileData)
     .set('Accept', 'application/json')
-    .set('credentials', 'same-origin')
   .end(function(err, res){
     console.log('uploaded..' + res);
     //todo: trigger an update
