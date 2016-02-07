@@ -38,12 +38,6 @@ if (env === 'development') {
 app.use(passport.initialize());
 app.use(passport.session());
 
-var knoxClient = knox.createClient({
-	key: "AKIAJIYZPWJHHHF5PWVQ",
-	secret: "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",
-	bucket: "photogrid-ks"
-});
-
 var imagenImage = new mongoose.Schema({
 	fileName:String,
 	userName: String
@@ -60,4 +54,4 @@ var server = require('http').createServer(app);
 
 server.listen(app.get('port'), function() {
 	console.log("Our server is running on port " + app.get('port'));
-})
+});
