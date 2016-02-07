@@ -7,6 +7,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var browserHistory = ReactRouter.browserHistory;
 
+
 var CreateHistory = require('history/lib/createHashHistory');
 
 var History = new CreateHistory({
@@ -20,8 +21,8 @@ var ImageUploadComponent = require('./components/ImageUploadComponent.jsx');
 //<Route path="/image/:imageId" component={ImagePage} />
 
 var Routes = (
-  <Router history={History}>
-    <Route path="/" component={BasePage} >
+  <Router history={browserHistory}>
+    <Route path="/images" component={BasePage} >
      <IndexRoute component={ImagesPage} />
      <Route path="/upload" component={ImageUploadComponent} />
     </Route>

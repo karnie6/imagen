@@ -12,12 +12,9 @@ var User = React.createClass({
     return {userName: "", userPic: ""};
   },
   componentWillMount: function() {
-    console.log('here1');
     Actions.getUser();
   },
   onUserAction: function(event, data) {
-    console.log('here2');
-
     this.setState({userName: data.fullname, userPic: data.profilePic});
   },
   render: function() {

@@ -1,9 +1,9 @@
 var React = require('react');
 var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
 var Reflux = require('reflux');
 var Actions = require('./reflux/action.jsx');
 var ImageStore = require('./reflux/image-store.jsx');
+var Image = require('./Image.jsx');
 
 var ImagesPage = React.createClass({
   mixins:[Reflux.listenTo(ImageStore, 'onChange')],
@@ -17,13 +17,10 @@ var ImagesPage = React.createClass({
     this.setState({images: data});
   },
   render: function() {
-    var listItems = this.state.images.map(function(image) {
-        var hrefString = "/image/" + image._id;
-        var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + image.fileName;
-        return <div key={image._id}><a href={hrefString}><img width="150" height="150" src={imageLocationHref}/></a><span>{image.userName}</span></div>;
-    });
-
-    return (<div>{listItems}</div>);
+    var renderImage = function(image) {
+      return (<Image key={image._id} id={image._id} fileName={image.fileName} userName={image.userName}/>);
+    }
+    return (<div>{this.state.images.map(renderImage, this)}</div>);
   }
 });
 

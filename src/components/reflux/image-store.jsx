@@ -5,8 +5,10 @@ var request = require('superagent');
 
 var ImageStore = Reflux.createStore({
   listenables: [Actions],
+  init: function() {
+    this.images = [];
+  },
   getImages: function() {
-
     this.images = [];
     HTTP.get('/api/images')
     .then(function(data) {
@@ -17,13 +19,6 @@ var ImageStore = Reflux.createStore({
       }.bind(this));
     }.bind(this));
   },
-  getUser: function() {
-    HTTP.get('/user')
-    .then(function(data) {
-      this.user = data;
-      this.fireUserUpdate();
-    }.bind(this));
-  },
   uploadImage: function(fileData) {
     console.log("uploading..", fileData.name);
     var req = request.post('/api/image/upload');
@@ -32,8 +27,8 @@ var ImageStore = Reflux.createStore({
   .end(function(err, res){
     if (!err && res.statusCode == 200) {
       //it was successful, push an image on to images & fire an update
-  //    var newImage = res.text;
-    //  this.images.push(newImage);
+      var newImage = res.text;
+      this.images.push(newImage);
       this.fireImageUpdate();
     }
 
