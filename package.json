@@ -13,6 +13,7 @@
   "dependencies": {
     "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
+    "body-parser": "^1.14.2",
     "connect-mongo": "0.8.2",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.3",

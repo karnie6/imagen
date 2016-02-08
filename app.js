@@ -8,6 +8,7 @@ var express = require('express');
 	knox = require('knox'),
 	fs = require('fs'),
 	os = require('os'),
+	bodyparser = require('body-parser'),
 	formidable = require('formidable'),
 	mongoose = require('mongoose').connect(config.dbURL),
   FacebookStrategy = require('passport-facebook').Strategy;
@@ -47,7 +48,7 @@ var imagenImageModel = mongoose.model('imagenImage', imagenImage);
 
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
-require('./routes/routes.js')(express, app, passport, knox, fs, os, formidable, imagenImageModel);
+require('./routes/routes.js')(express, app, bodyparser, passport, knox, fs, os, formidable, imagenImageModel);
 
 app.set('port', process.env.PORT || 3000);
 var server = require('http').createServer(app);

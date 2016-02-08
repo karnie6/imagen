@@ -8,18 +8,27 @@ var Image = require('./Image.jsx');
 var ImagePage = React.createClass({
   mixins:[Reflux.listenTo(ImageStore, 'onImage')],
   getInitialState: function() {
-      return {image:null};
+      return {image:null, annotations: []};
   },
   componentWillMount: function() {
     Actions.getImage(this.props.params.imageId);
   },
   onImage: function(event, data) {
     this.setState({image: data});
+    anno.makeAnnotatable(document.getElementById('image'));
+    anno.addHandler('onAnnotationCreated', this.addAnnotation);
+  },
+  addAnnotation: function(annotationToBeAdded) {
+    var currentAnnotations = this.state.annotations;
+    currentAnnotations.push(annotationToBeAdded);
+    this.setState({annotations: currentAnnotations});
+  },
+  saveAnnotation: function() {
+    Actions.saveAnnotations(this.state.image._id, this.state.annotations);
   },
   render: function() {
-
       if (this.state.image) {
-        return (<Image key={this.state.image._id} fileName={this.state.image.fileName}/>);
+        return (<div><Image key={this.state.image._id} fileName={this.state.image.fileName}/><button className="btn btn-success btn-large" onClick={this.saveAnnotation}>Save Annotations</button></div>);
       } else {
         return null;
       }

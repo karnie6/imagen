@@ -9,10 +9,12 @@ var service = {
         });
     },
     post: function(url, data) {
+      console.log(data);
       return fetch(baseUrl + url, {
         headers: {
           'Accept': 'text/plain',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'credentials': 'same-origin'
         },
         method: 'post',
         body: data

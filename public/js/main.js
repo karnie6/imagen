@@ -29385,16 +29385,19 @@ var React = require('react');
 var ReactRouter = require('react-router');
 
 var Image = React.createClass({
-      displayName: 'Image',
+  displayName: 'Image',
 
-      render: function () {
-            var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
-            return React.createElement(
-                  'div',
-                  { key: this.props.id },
-                  React.createElement('img', { className: 'image', src: imageLocationHref })
-            );
-      }
+  componentDidMount: function () {
+    anno.makeAnnotatable(document.getElementById('image'));
+  },
+  render: function () {
+    var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
+    return React.createElement(
+      'div',
+      { key: this.props.id },
+      React.createElement('img', { id: 'image', className: 'image annotatable', src: imageLocationHref })
+    );
+  }
 });
 
 module.exports = Image;
@@ -29412,18 +29415,36 @@ var ImagePage = React.createClass({
 
   mixins: [Reflux.listenTo(ImageStore, 'onImage')],
   getInitialState: function () {
-    return { image: null };
+    return { image: null, annotations: [] };
   },
   componentWillMount: function () {
     Actions.getImage(this.props.params.imageId);
   },
   onImage: function (event, data) {
     this.setState({ image: data });
+    anno.makeAnnotatable(document.getElementById('image'));
+    anno.addHandler('onAnnotationCreated', this.addAnnotation);
+  },
+  addAnnotation: function (annotationToBeAdded) {
+    var currentAnnotations = this.state.annotations;
+    currentAnnotations.push(annotationToBeAdded);
+    this.setState({ annotations: currentAnnotations });
+  },
+  saveAnnotation: function () {
+    Actions.saveAnnotations(this.state.image._id, this.state.annotations);
   },
   render: function () {
-
     if (this.state.image) {
-      return React.createElement(Image, { key: this.state.image._id, fileName: this.state.image.fileName });
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(Image, { key: this.state.image._id, fileName: this.state.image.fileName }),
+        React.createElement(
+          'button',
+          { className: 'btn btn-success btn-large', onClick: this.saveAnnotation },
+          'Save Annotations'
+        )
+      );
     } else {
       return null;
     }
@@ -29714,7 +29735,7 @@ module.exports = User;
 var React = require('react');
 var Reflux = require('reflux');
 
-var Actions = Reflux.createActions(['getImages', 'uploadImage', 'getUser', 'getImage']);
+var Actions = Reflux.createActions(['getImages', 'uploadImage', 'getUser', 'getImage', 'saveAnnotations']);
 
 module.exports = Actions;
 
@@ -29746,6 +29767,13 @@ var ImageStore = Reflux.createStore({
         this.fireImagesUpdate();
       }.bind(this));
     }.bind(this));
+  },
+  saveAnnotations: function (imageId, annotations) {
+    //var imageAnnotation = {imageId: imageId, annotation: annotation};
+    HTTP.post('/api/image/' + imageId + '/annotation', annotations).then(function (data) {
+
+      //image annotation has been saved, we could fire a trigger here
+    });
   },
   uploadImage: function (fileData) {
     console.log("uploading..", fileData.name);
@@ -29808,10 +29836,12 @@ var service = {
     });
   },
   post: function (url, data) {
+    console.log(data);
     return fetch(baseUrl + url, {
       headers: {
         'Accept': 'text/plain',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'credentials': 'same-origin'
       },
       method: 'post',
       body: data

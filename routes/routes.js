@@ -1,4 +1,4 @@
-module.exports = function(express, app, passport, knox, fs, os, formidable, imagenImageModel){
+module.exports = function(express, app, bodyparser, passport, knox, fs, os, formidable, imagenImageModel){
 	var router = express.Router();
 
 	//go directly to /images
@@ -58,6 +58,16 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		res.send({});
 	});
 
+	router.post('/api/image/:imageId/annotation', function(req, res, next) {
+		console.log(req.param("imageId"));
+		console.log(req.post);
+	/*	imagenImageModel.find({_id: req.param("imageId")}, function(error, result) {
+
+
+
+	}); */
+	});
+
 	//route to handle image upload
 	router.post('/api/image/upload', function(req, res, next) {
 
@@ -69,8 +79,8 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 			for(var i = 0; i < 10; i++) {
 				fstring += charBank[parseInt(Math.random()*9)];
 			}
-
-			return fstring + '.jpg';
+			return filename;
+			//return fstring + '.jpg';
 		}
 
 		var tmpFile, nfile, fname;
@@ -96,7 +106,6 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 
 					//if successfully saved on S3, let's save it in the DB
 					req.on('response', function(res) {
-						console.log(fname);
 						if (res.statusCode == 200) {
 							var newImage = new imagenImageModel({
 								fileName: fname,
@@ -127,5 +136,6 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		bucket: "photogrid-ks"
 	});
 
+	app.use(bodyparser.json({ type: 'application/*+json' }));
 	app.use('/', router);
 };
