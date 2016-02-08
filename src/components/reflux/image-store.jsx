@@ -8,13 +8,23 @@ var ImageStore = Reflux.createStore({
   init: function() {
     this.images = [];
   },
+  getImage: function(imageId) {
+    this.image = {};
+    HTTP.get('/api/image/' + imageId )
+    .then(function(data) {
+      if (data) {
+             this.image = data[0];
+             this.fireImageUpdate();
+      }
+    }.bind(this));
+  },
   getImages: function() {
     this.images = [];
     HTTP.get('/api/images')
     .then(function(data) {
       var imageData = data.map(function(image) {
               this.images.push(image);
-              this.fireImageUpdate();
+              this.fireImagesUpdate();
 
       }.bind(this));
     }.bind(this));
@@ -29,7 +39,7 @@ var ImageStore = Reflux.createStore({
       //it was successful, push an image on to images & fire an update
       var newImage = res.text;
       this.images.push(newImage);
-      this.fireImageUpdate();
+      this.fireImagesUpdate();
     }
 
   }.bind(this));
@@ -39,8 +49,11 @@ var ImageStore = Reflux.createStore({
   fireUserUpdate: function() {
     this.trigger('userAction', this.user);
   },
-  fireImageUpdate: function() {
+  fireImagesUpdate: function() {
     this.trigger('change', this.images);
+  },
+  fireImageUpdate: function() {
+    this.trigger('image', this.image);
   }
 });
 

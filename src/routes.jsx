@@ -10,14 +10,14 @@ var browserHistory = ReactRouter.browserHistory;
 var BasePage = require('./components/BasePage.jsx');
 var ImagesPage = require('./components/ImagesPage.jsx');
 var ImageUploadComponent = require('./components/ImageUploadComponent.jsx');
-//var ImagePage = require('./components/ImagePage.jsx');
-//<Route path="/image/:imageId" component={ImagePage} />
+var ImagePage = require('./components/ImagePage.jsx');
 
 var Routes = (
   <Router history={browserHistory}>
     <Route path="/images" component={BasePage} >
      <IndexRoute component={ImagesPage} />
      <Route path="/upload" component={ImageUploadComponent} />
+     <Route path="/image/:imageId" component={ImagePage} />
     </Route>
   </Router>
 

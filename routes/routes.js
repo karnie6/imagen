@@ -17,6 +17,11 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 		});
 	});
 
+	router.get('/image/:imageId', securePages, function(req, res, next){
+		res.render('index', {
+		});
+	});
+
 	router.get('/upload', securePages, function(req, res, next){
 		res.render('index', {
 		});
@@ -34,6 +39,12 @@ module.exports = function(express, app, passport, knox, fs, os, formidable, imag
 	//api routes for client side app to get data (user + images)
 	router.get('/api/user', function(req, res, next) {
 		res.send(JSON.stringify(req.user));
+	});
+
+	router.get('/api/image/:imageId', function(req, res, next) {
+		imagenImageModel.find({_id: req.param("imageId")}, function(error, result) {
+			res.send(JSON.stringify(result));
+		});
 	});
 
 	router.get('/api/images', function(req, res, next) {

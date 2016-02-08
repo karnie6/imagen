@@ -93,9 +93,14 @@ div.filepicker {
   padding-left: 5px;
 }
 
-.image {
+.thumbnailImage {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.image {
+  width:100%;
+  max-width:750px;
 }
 
 .imageUploader {
