@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 
-var Image = React.createClass({
+var ThumbnailImage = React.createClass({
   render: function() {
         var hrefString = "/image/" + this.props.id;
         var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
@@ -12,4 +12,4 @@ var Image = React.createClass({
   }
 });
 
-module.exports = Image;
+module.exports = ThumbnailImage;

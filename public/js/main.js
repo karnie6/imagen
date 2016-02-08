@@ -29383,41 +29383,6 @@ module.exports = BasePage;
 },{"./nav/NavBar.jsx":251,"react":222}],248:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
-
-var Image = React.createClass({
-      displayName: 'Image',
-
-      render: function () {
-            var hrefString = "/image/" + this.props.id;
-            var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
-            return React.createElement(
-                  'div',
-                  { className: 'image', key: this.props.id },
-                  React.createElement(
-                        'a',
-                        { href: hrefString },
-                        React.createElement('img', { maxWidth: '200', height: '200', src: imageLocationHref })
-                  ),
-                  React.createElement(
-                        'div',
-                        { className: 'imageUploader' },
-                        'Uploaded by ',
-                        this.props.userName
-                  ),
-                  React.createElement(
-                        'a',
-                        { href: hrefString, className: 'btn btn-primary btn-large' },
-                        'Annotate'
-                  )
-            );
-      }
-});
-
-module.exports = Image;
-
-},{"react":222,"react-router":58}],249:[function(require,module,exports){
-var React = require('react');
-var ReactRouter = require('react-router');
 var HTTP = require('./services/httpservice.jsx');
 var Reflux = require('reflux');
 var Actions = require('./reflux/action.jsx');
@@ -29498,13 +29463,13 @@ var ImageUploadComponent = React.createClass({
 
 module.exports = ImageUploadComponent;
 
-},{"./reflux/action.jsx":254,"./reflux/image-store.jsx":255,"./services/httpservice.jsx":257,"react":222,"react-dropzone":29,"react-dropzone-component":27,"react-router":58,"reflux":239,"superagent":242}],250:[function(require,module,exports){
+},{"./reflux/action.jsx":254,"./reflux/image-store.jsx":255,"./services/httpservice.jsx":257,"react":222,"react-dropzone":29,"react-dropzone-component":27,"react-router":58,"reflux":239,"superagent":242}],249:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Reflux = require('reflux');
 var Actions = require('./reflux/action.jsx');
 var ImageStore = require('./reflux/image-store.jsx');
-var Image = require('./Image.jsx');
+var ThumbnailImage = require('./ThumbnailImage.jsx');
 
 var ImagesPage = React.createClass({
   displayName: 'ImagesPage',
@@ -29521,7 +29486,7 @@ var ImagesPage = React.createClass({
   },
   render: function () {
     var renderImage = function (image) {
-      return React.createElement(Image, { key: image._id, id: image._id, fileName: image.fileName, userName: image.userName });
+      return React.createElement(ThumbnailImage, { key: image._id, id: image._id, fileName: image.fileName, userName: image.userName });
     };
     return React.createElement(
       'div',
@@ -29538,7 +29503,42 @@ var ImagesPage = React.createClass({
 
 module.exports = ImagesPage;
 
-},{"./Image.jsx":248,"./reflux/action.jsx":254,"./reflux/image-store.jsx":255,"react":222,"react-router":58,"reflux":239}],251:[function(require,module,exports){
+},{"./ThumbnailImage.jsx":250,"./reflux/action.jsx":254,"./reflux/image-store.jsx":255,"react":222,"react-router":58,"reflux":239}],250:[function(require,module,exports){
+var React = require('react');
+var ReactRouter = require('react-router');
+
+var ThumbnailImage = React.createClass({
+      displayName: 'ThumbnailImage',
+
+      render: function () {
+            var hrefString = "/image/" + this.props.id;
+            var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
+            return React.createElement(
+                  'div',
+                  { className: 'image', key: this.props.id },
+                  React.createElement(
+                        'a',
+                        { href: hrefString },
+                        React.createElement('img', { maxWidth: '200', height: '200', src: imageLocationHref })
+                  ),
+                  React.createElement(
+                        'div',
+                        { className: 'imageUploader' },
+                        'Uploaded by ',
+                        this.props.userName
+                  ),
+                  React.createElement(
+                        'a',
+                        { href: hrefString, className: 'btn btn-primary btn-large' },
+                        'Annotate'
+                  )
+            );
+      }
+});
+
+module.exports = ThumbnailImage;
+
+},{"react":222,"react-router":58}],251:[function(require,module,exports){
 var React = require('react');
 var NavItem = require('./NavItem.jsx');
 var ReactRouter = require('react-router');
@@ -29795,4 +29795,4 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":249,"./components/ImagesPage.jsx":250,"react":222,"react-router":58}]},{},[258]);
+},{"./components/BasePage.jsx":247,"./components/ImageUploadComponent.jsx":248,"./components/ImagesPage.jsx":249,"react":222,"react-router":58}]},{},[258]);
