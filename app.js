@@ -3,6 +3,7 @@ var express = require('express');
 	path = require('path'),
 	config = require('./config/config.js'),
 	session = require('express-session'),
+	ConnectMongo = require('connect-mongo')(session),
   cookieParser = require('cookie-parser'),
   passport = require('passport'),
 	knox = require('knox'),
@@ -27,6 +28,7 @@ app.all('/*', function(req, res, next) {
 });
 
 var env = process.env.NODE_ENV || 'development';
+var env = "production";
 
 if (env === 'development') {
 	//dev specific settings
