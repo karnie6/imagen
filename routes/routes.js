@@ -132,9 +132,11 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 
 	router.get('/auth/facebook', passport.authenticate('facebook'));
 	router.get('/auth/facebook/callback', passport.authenticate('facebook', {
-		sucessRedirect:'/images',
-		failureRedirect:'/'
-	}));
+		failureRedirect:'/login'}),
+		function(req, res) {
+				//Successful authentication, let's redirect to images
+				res.redirect('/images');
+		});
 
 	var knoxClient = knox.createClient({
 		key: "AKIAJIYZPWJHHHF5PWVQ",
