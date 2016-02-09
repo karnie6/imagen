@@ -29864,7 +29864,7 @@ module.exports = UserStore;
 
 },{"../services/httpservice.jsx":259,"./action.jsx":256,"reflux":239,"superagent":242}],259:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
-var baseUrl = 'http://localhost:3000';
+var baseUrl = '';
 
 var service = {
   get: function (url) {
