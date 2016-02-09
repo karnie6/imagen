@@ -4,7 +4,7 @@
 	"fb": {
 		"appID": "1677016632588048",
 		"appSecret": "74a9bacc4a29a0a4fc4e283a2275057f",
-		"callbackURL": "http://imagen-karthik.herokuapp.com/auth/facebook/callback"
+		"callbackURL": "https://imagen-ks.herokuapp.com/auth/facebook/callback"
 	},
-	"host":"imagen-karthik.herokuapp.com"
+	"host":"imagen-ks.herokuapp.com"
 }
