@@ -31,9 +31,8 @@ var ImageStore = Reflux.createStore({
   },
   saveAnnotations: function(imageId, annotations) {
     //var imageAnnotation = {imageId: imageId, annotation: annotation};
-    HTTP.post('/api/image/' + imageId + '/annotation', annotations)
+    HTTP.post('/api/image/' + imageId + '/annotation', JSON.stringify(annotations))
     .then(function(data) {
-
       //image annotation has been saved, we could fire a trigger here
     });
   },

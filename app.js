@@ -19,6 +19,13 @@ app.set('view engine', 'html');
 app.use(express.static(path.join(__dirname,'public')));
 app.use(cookieParser());
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "POST, GET");
+  next();
+});
+
 var env = process.env.NODE_ENV || 'development';
 
 if (env === 'development') {
@@ -41,7 +48,8 @@ app.use(passport.session());
 
 var imagenImage = new mongoose.Schema({
 	fileName:String,
-	userName: String
+	userName: String,
+	annotations: Array
 });
 
 var imagenImageModel = mongoose.model('imagenImage', imagenImage);

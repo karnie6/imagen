@@ -29392,10 +29392,14 @@ var Image = React.createClass({
   },
   render: function () {
     var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
+    var imageStyle = {
+      maxWidth: '750px'
+    };
+
     return React.createElement(
       'div',
       { key: this.props.id },
-      React.createElement('img', { id: 'image', className: 'image annotatable', src: imageLocationHref })
+      React.createElement('img', { id: 'image', style: imageStyle, className: 'annotatable', src: imageLocationHref })
     );
   }
 });
@@ -29421,9 +29425,17 @@ var ImagePage = React.createClass({
     Actions.getImage(this.props.params.imageId);
   },
   onImage: function (event, data) {
-    this.setState({ image: data });
+    this.setState({ image: data, annotations: data.annotations });
+    anno.reset();
     anno.makeAnnotatable(document.getElementById('image'));
     anno.addHandler('onAnnotationCreated', this.addAnnotation);
+
+    //draw annotations
+    if (data.annotations && data.annotations.length > 0) {
+      data.annotations.forEach(function (annotation) {
+        anno.addAnnotation(annotation);
+      });
+    }
   },
   addAnnotation: function (annotationToBeAdded) {
     var currentAnnotations = this.state.annotations;
@@ -29559,7 +29571,15 @@ var ImagesPage = React.createClass({
   },
   render: function () {
     var renderImage = function (image) {
-      return React.createElement(ThumbnailImage, { key: image._id, id: image._id, fileName: image.fileName, userName: image.userName });
+      return React.createElement(
+        'table',
+        null,
+        React.createElement(
+          'tbody',
+          null,
+          React.createElement(ThumbnailImage, { key: image._id, id: image._id, fileName: image.fileName, userName: image.userName })
+        )
+      );
     };
     return React.createElement(
       'div',
@@ -29587,23 +29607,31 @@ var ThumbnailImage = React.createClass({
             var hrefString = "/image/" + this.props.id;
             var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
             return React.createElement(
-                  'div',
-                  { className: 'thumbnailImage', key: this.props.id },
+                  'tr',
+                  { key: this.props.id },
                   React.createElement(
-                        'a',
-                        { href: hrefString },
-                        React.createElement('img', { maxWidth: '200', height: '200', src: imageLocationHref })
+                        'td',
+                        { className: 'thumbnailImage thumbnailImage-td', key: this.props.id },
+                        React.createElement(
+                              'a',
+                              { href: hrefString },
+                              React.createElement('img', { maxWidth: '200', height: '200', src: imageLocationHref })
+                        ),
+                        React.createElement(
+                              'div',
+                              { className: 'imageUploader' },
+                              'Uploaded by ',
+                              this.props.userName
+                        )
                   ),
                   React.createElement(
-                        'div',
-                        { className: 'imageUploader' },
-                        'Uploaded by ',
-                        this.props.userName
-                  ),
-                  React.createElement(
-                        'a',
-                        { href: hrefString, className: 'btn btn-primary btn-large' },
-                        'Annotate'
+                        'td',
+                        { className: 'annotationButton-td' },
+                        React.createElement(
+                              'a',
+                              { href: hrefString, className: 'btn btn-primary btn-large' },
+                              'Annotate'
+                        )
                   )
             );
       }
@@ -29770,8 +29798,7 @@ var ImageStore = Reflux.createStore({
   },
   saveAnnotations: function (imageId, annotations) {
     //var imageAnnotation = {imageId: imageId, annotation: annotation};
-    HTTP.post('/api/image/' + imageId + '/annotation', annotations).then(function (data) {
-
+    HTTP.post('/api/image/' + imageId + '/annotation', JSON.stringify(annotations)).then(function (data) {
       //image annotation has been saved, we could fire a trigger here
     });
   },

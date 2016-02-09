@@ -59,13 +59,16 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 	});
 
 	router.post('/api/image/:imageId/annotation', function(req, res, next) {
-		console.log(req.param("imageId"));
-		console.log(req.post);
-	/*	imagenImageModel.find({_id: req.param("imageId")}, function(error, result) {
+		var annotations = req.body;
+		var imageId = req.param("imageId");
 
+		imagenImageModel.findOne({ _id: imageId }, function (err, doc){
+  		doc.annotations = annotations;
+  		doc.save();
+		});
 
-
-	}); */
+		res.writeHead(200, {'Content-type':'text/plain'});
+		res.end();
 	});
 
 	//route to handle image upload
@@ -79,8 +82,8 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 			for(var i = 0; i < 10; i++) {
 				fstring += charBank[parseInt(Math.random()*9)];
 			}
-			return filename;
-			//return fstring + '.jpg';
+			//return filename;
+			return fstring + '.jpg';
 		}
 
 		var tmpFile, nfile, fname;
@@ -91,8 +94,7 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 			tmpFile = files.upload.path;
 			fname = generateFilename(files.upload.name);
 			nfile = os.tmpDir() + '/' + fname;
-			res.send({fileName: fname, userName: userName});
-			res.end();
+
 		});
 
 		newForm.on('end', function() {
@@ -105,12 +107,16 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 					});
 
 					//if successfully saved on S3, let's save it in the DB
-					req.on('response', function(res) {
-						if (res.statusCode == 200) {
+					req.on('response', function(s3response) {
+						if (s3response.statusCode == 200) {
 							var newImage = new imagenImageModel({
 								fileName: fname,
-								userName: userName
+								userName: userName,
+								annotations: []
 							}).save();
+
+							res.send({fileName: fname, userName: userName});
+							res.end();
 
 							fs.unlink(nfile, function() {
 								console.log('Local File Deleted');
@@ -136,6 +142,7 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 		bucket: "photogrid-ks"
 	});
 
-	app.use(bodyparser.json({ type: 'application/*+json' }));
+	app.use(bodyparser.json());
+	app.use(bodyparser.urlencoded({extended: false}));
 	app.use('/', router);
 };

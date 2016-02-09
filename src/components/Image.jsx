@@ -7,8 +7,12 @@ var Image = React.createClass({
   },
   render: function() {
         var imageLocationHref = "http://d1zxs15htpm6t7.cloudfront.net/" + this.props.fileName;
+        var imageStyle = {
+            maxWidth: '750px'
+          };
+
         return <div key={this.props.id}>
-        <img id="image" className="image annotatable" src={imageLocationHref}/>
+        <img id="image" style={imageStyle} className="annotatable" src={imageLocationHref}/>
         </div>;
   }
 });

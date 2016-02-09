@@ -14,9 +14,17 @@ var ImagePage = React.createClass({
     Actions.getImage(this.props.params.imageId);
   },
   onImage: function(event, data) {
-    this.setState({image: data});
+    this.setState({image: data, annotations: data.annotations});
+    anno.reset();
     anno.makeAnnotatable(document.getElementById('image'));
     anno.addHandler('onAnnotationCreated', this.addAnnotation);
+
+    //draw annotations
+    if (data.annotations && data.annotations.length > 0) {
+      data.annotations.forEach(function(annotation) {
+        anno.addAnnotation(annotation);
+      });
+    }
   },
   addAnnotation: function(annotationToBeAdded) {
     var currentAnnotations = this.state.annotations;

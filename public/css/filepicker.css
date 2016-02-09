@@ -115,3 +115,11 @@ div.filepicker {
   color: #270;
   background-color: #DFF2BF;
 }
+
+.thumbnailImage-td {
+  margin-bottom: 25px;
+}
+
+.annotationButton-td {
+  padding-left: 25px;
+}
