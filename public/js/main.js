@@ -29419,7 +29419,7 @@ var ImagePage = React.createClass({
 
   mixins: [Reflux.listenTo(ImageStore, 'onImage')],
   getInitialState: function () {
-    return { image: null, annotations: [] };
+    return { image: null, annotations: [], savedAnnotations: false };
   },
   componentWillMount: function () {
     Actions.getImage(this.props.params.imageId);
@@ -29443,6 +29443,7 @@ var ImagePage = React.createClass({
     this.setState({ annotations: currentAnnotations });
   },
   saveAnnotation: function () {
+    this.setState({ savedAnnotations: true });
     Actions.saveAnnotations(this.state.image._id, this.state.annotations);
   },
   render: function () {
@@ -29455,6 +29456,15 @@ var ImagePage = React.createClass({
           'button',
           { className: 'btn btn-success btn-large', onClick: this.saveAnnotation },
           'Save Annotations'
+        ),
+        React.createElement(
+          'div',
+          null,
+          this.state.savedAnnotations ? React.createElement(
+            'span',
+            { className: 'success-msg' },
+            'Successfully Saved Annotation(s)!'
+          ) : null
         )
       );
     } else {
