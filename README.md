@@ -9,4 +9,5 @@ To run by checking out, follow these steps:
 
 #Open Issues
 * Occasionally, Annotorious isn't able to correctly size the canvas for image annotations, not allowing the user to create or load previous annotations.  I believe this is an issue around Annotorious not responding correctly to resize events, but more investigation is needed
+* Annotated images go to the bottom of the list - they should maintain uploaded date order (this needs a database update as well as some view logic updating)
 * Locally, Facebook redirection post login fails.  The user has to manually go to http://localhost:3000/images after logging in.
