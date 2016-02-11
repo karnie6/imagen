@@ -139,8 +139,8 @@ module.exports = function(express, app, bodyparser, passport, knox, fs, os, form
 		});
 
 	var knoxClient = knox.createClient({
-		key: "AKIAJIYZPWJHHHF5PWVQ",
-		secret: "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",
+		key: "AKIAI3OFQVPHWZ54WL6A",
+		secret: "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",
 		bucket: "photogrid-ks"
 	});
 
