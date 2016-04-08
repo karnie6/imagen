@@ -12,7 +12,9 @@ var express = require('express');
 	bodyparser = require('body-parser'),
 	formidable = require('formidable'),
 	mongoose = require('mongoose').connect(config.dbURL),
-  FacebookStrategy = require('passport-facebook').Strategy;
+  FacebookStrategy = require('passport-facebook').Strategy,
+	querystring = require('querystring'),
+	request = require('request');
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('hogan-express'));

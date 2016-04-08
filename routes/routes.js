@@ -1,6 +1,20 @@
 module.exports = function(express, app, bodyparser, passport, knox, fs, os, formidable, imagenImageModel){
 	var router = express.Router();
 
+	//this is for karthik's education tutoring prototype - can be removed if needed
+	router.post('/message', function(req, res, next) {
+	//	console.log(req.body);
+
+		if (req.body && req.body.user_name != 'slackbot' && req.body.bot_name != 'incoming-webhook') {
+			request.post('https://sweltering-heat-2285.firebaseio.com/messages.json', {
+				json: {
+				"imageUrl": "",
+				"sender": "Slack",
+				"text": req.body.text} }, function(error, response, body) {});
+			res.end();
+		}
+	});
+
 	//go directly to /images
 	router.get('/', function(req, res, next) {
 		res.redirect('/images');
